@@ -1,0 +1,20 @@
+{
+  "name": "mick-vue",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:qinran0423/mick-vue.git",
+  "author": "qinran0423 <1156107187@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^27.0.1",
+    "babel-jest": "^27.1.0",
+    "jest": "^27.1.0",
+    "typescript": "^4.4.2"
+  }
+}
