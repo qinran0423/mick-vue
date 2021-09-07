@@ -31,16 +31,26 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
 
-  dep.add(activeEffect)
+  trackEffects(dep)
 
+}
+
+
+export function trackEffects(dep) {
+  dep.add(activeEffect)
 }
 
 export function trigger(target, key) {
   let depsMap = targetMap.get(target)
   let dep = depsMap.get(key)
+  triggerEffects(dep)
 
+
+}
+
+
+export function triggerEffects(dep) {
   for (const effect of dep) {
     effect.run()
   }
-
 }
