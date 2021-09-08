@@ -18,9 +18,9 @@ describe('ref', () => {
     expect(dummy).toBe(2)
     expect(calls).toBe(2)
     // 同样的值不会触发依赖更新
-    // num.value = 2
-    // expect(dummy).toBe(2)
-    // expect(calls).toBe(2)
+    num.value = 2
+    expect(dummy).toBe(2)
+    expect(calls).toBe(2)
 
   })
 })

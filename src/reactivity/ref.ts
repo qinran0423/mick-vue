@@ -18,8 +18,11 @@ class RefTmpl {
   }
 
   set value(newval) {
-    this._value = newval
-    triggerRefValue(this)
+    if (!Object.is(this._value, newval)) {
+      this._value = convert(newval)
+      triggerRefValue(this)
+
+    }
 
   }
 }
