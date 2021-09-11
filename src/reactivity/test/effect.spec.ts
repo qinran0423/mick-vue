@@ -103,4 +103,20 @@ describe('effect', () => {
     stop(runner)
     expect(onStop).toBeCalledTimes(1)
   })
+
+  it('should observe nested properties', () => {
+    let dummy;
+    const counter = reactive({
+      nested: {
+        num: 0
+      }
+    })
+
+    effect(() => {
+      dummy = counter.nested.num
+    })
+    expect(dummy).toBe(0)
+    counter.nested.num = 10
+    expect(dummy).toBe(10)
+  })
 })
