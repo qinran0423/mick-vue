@@ -35,7 +35,7 @@ describe('effect', () => {
     expect(r).toBe("foo")
   })
 
-  it('description', () => {
+  it('scheduler', () => {
     // 1. 通过effect的第二个参数给定的一个scheduler的fn
     // 2. effect第一次执行的时候 还会执行fn 
     // 3. 当 响应式对象 set update不会执行fn 而是执行 scheduler
