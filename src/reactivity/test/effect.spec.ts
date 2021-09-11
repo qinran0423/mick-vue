@@ -20,6 +20,58 @@ describe('effect', () => {
     expect(nextAge).toBe(12)
   })
 
+  it('should observe multiple properties', () => {
+    let dummy;
+    const counter = reactive({ num1: 0, num2: 0 });
+    effect(() => (dummy = counter.num1 + counter.num1 + counter.num2));
+
+    expect(dummy).toBe(0);
+    counter.num1 = counter.num2 = 7;
+    expect(dummy).toBe(21);
+  })
+
+  it("should handle multiple effects", () => {
+    let dummy1, dummy2;
+    const counter = reactive({ num: 0 });
+    effect(() => (dummy1 = counter.num));
+    effect(() => (dummy2 = counter.num));
+
+    expect(dummy1).toBe(0);
+    expect(dummy2).toBe(0);
+    counter.num++;
+    expect(dummy1).toBe(1);
+    expect(dummy2).toBe(1);
+  });
+
+  it('should observe nested properties', () => {
+    let dummy;
+    const counter = reactive({
+      nested: {
+        num: 0
+      }
+    })
+
+    effect(() => {
+      dummy = counter.nested.num
+    })
+    expect(dummy).toBe(0)
+    counter.nested.num = 10
+    expect(dummy).toBe(10)
+  })
+
+  it("should observe function call chains", () => {
+    let dummy;
+    const counter = reactive({ num: 0 });
+    effect(() => (dummy = getNum()));
+
+    function getNum() {
+      return counter.num;
+    }
+
+    expect(dummy).toBe(0);
+    counter.num = 2;
+    expect(dummy).toBe(2);
+  });
 
   it('should return runner when call effect', () => {
     // effect(fn) -> function(runner) -> fn -> return
@@ -102,21 +154,5 @@ describe('effect', () => {
 
     stop(runner)
     expect(onStop).toBeCalledTimes(1)
-  })
-
-  it('should observe nested properties', () => {
-    let dummy;
-    const counter = reactive({
-      nested: {
-        num: 0
-      }
-    })
-
-    effect(() => {
-      dummy = counter.nested.num
-    })
-    expect(dummy).toBe(0)
-    counter.nested.num = 10
-    expect(dummy).toBe(10)
   })
 })
