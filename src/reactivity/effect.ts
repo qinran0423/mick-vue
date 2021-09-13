@@ -51,6 +51,10 @@ function cleanupEffect(effect) {
 
 const targetMap = new Map()
 export function track(target, key) {
+  // if (!activeEffect) return
+  // if (!shouldTrack) return
+
+  if (!isTracking()) return
   // target -> key -> dep
   let depsMap = targetMap.get(target)
   if (!depsMap) {
@@ -63,11 +67,15 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
 
-  if (!activeEffect) return
-  if (!shouldTrack) return
+  if (dep.has(activeEffect)) return
   trackEffects(dep)
 
 }
+
+function isTracking() {
+  return activeEffect && shouldTrack
+}
+
 
 
 export function trackEffects(dep) {
