@@ -1,6 +1,7 @@
 import { extend } from "../shared"
 
 let activeEffect
+let shouldTrack
 export function effect(fn, options: any = {}) {
   const _effect = new ReactiveEffect(fn, options.scheduler)
 
@@ -21,8 +22,17 @@ class ReactiveEffect {
     this._fn = fn
   }
   run() {
+    if (!this.active) {
+      return this._fn()
+    }
+    shouldTrack = true
     activeEffect = this
-    return this._fn()
+
+    const result = this._fn()
+
+    shouldTrack = false
+
+    return result
   }
   stop() {
     if (this.active) {
@@ -53,14 +63,17 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
 
+  if (!activeEffect) return
+  if (!shouldTrack) return
   trackEffects(dep)
 
 }
 
 
 export function trackEffects(dep) {
+
   dep.add(activeEffect)
-  activeEffect && activeEffect.deps.push(dep)
+  activeEffect.deps.push(dep)
 }
 
 export function trigger(target, key) {
