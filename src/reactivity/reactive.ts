@@ -1,22 +1,13 @@
-import { isObject } from "../shared"
-import { track, trigger } from "./effect"
+import { mutableHandler, readonlyHandler } from "./baseHandlers"
 
 export function reactive(raw) {
-  return new Proxy(raw, {
-    get(target, key) {
-      const res = Reflect.get(target, key)
-      // 如果是嵌套对象 则需遍历执行reactive
-      if (isObject(res)) {
-        return reactive(res)
-      }
-      track(target, key)
-      return res
-    },
-    set(target, key, val) {
+  return createActiveOject(raw, mutableHandler)
+}
 
-      const res = Reflect.set(target, key, val)
-      trigger(target, key)
-      return res
-    }
-  })
+export function readonly(raw) {
+  return createActiveOject(raw, readonlyHandler)
+}
+
+function createActiveOject(raw, baseHandlers) {
+  return new Proxy(raw, baseHandlers)
 }
