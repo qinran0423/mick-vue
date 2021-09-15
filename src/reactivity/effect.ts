@@ -3,8 +3,10 @@ import { extend } from "../shared"
 let activeEffect
 let shouldTrack
 export function effect(fn, options: any = {}) {
+  // 每一个副作用函数会基于ReactiveEffect类生成实例
   const _effect = new ReactiveEffect(fn, options.scheduler)
 
+  // 将 stop  scheduler合并到_effect上
   extend(_effect, options)
 
 
@@ -13,6 +15,8 @@ export function effect(fn, options: any = {}) {
   runner.effect = _effect
   return runner
 }
+
+// 创建一个副作用的类
 class ReactiveEffect {
   private _fn: any
   deps = []
@@ -43,12 +47,14 @@ class ReactiveEffect {
   }
 }
 
+// 清楚副作用
 function cleanupEffect(effect) {
   effect.deps.forEach((dep: any) => {
     dep.delete(effect)
   });
 }
 
+// 创建一个依赖收集的集合
 const targetMap = new Map()
 export function track(target, key) {
   // if (!activeEffect) return
