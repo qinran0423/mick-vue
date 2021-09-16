@@ -8,15 +8,15 @@ export const enum ReactiveFlags {
 
 
 export function reactive(raw) {
-  return createReactiveOject(raw, mutableHandler)
+  return createReactiveObject(raw, mutableHandler)
 }
 
 export function readonly(raw) {
-  return createReactiveOject(raw, readonlyHandler)
+  return createReactiveObject(raw, readonlyHandler)
 }
 
 export function shallowReadonly(raw) {
-  return createReactiveOject(raw, shallowReadonlyHandlers)
+  return createReactiveObject(raw, shallowReadonlyHandlers)
 }
 
 export function isReactive(value) {
@@ -32,6 +32,6 @@ export function isProxy(value) {
 }
 
 
-function createReactiveOject(raw, baseHandlers) {
+function createReactiveObject(raw, baseHandlers) {
   return new Proxy(raw, baseHandlers)
 }

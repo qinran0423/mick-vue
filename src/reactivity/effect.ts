@@ -26,6 +26,7 @@ class ReactiveEffect {
     this._fn = fn
   }
   run() {
+    // 1. 会收集依赖 
     if (!this.active) {
       return this._fn()
     }
@@ -73,19 +74,17 @@ export function track(target, key) {
     depsMap.set(key, dep)
   }
 
-  if (dep.has(activeEffect)) return
   trackEffects(dep)
 
 }
 
-function isTracking() {
-  return activeEffect && shouldTrack
+export function isTracking() {
+  return shouldTrack && activeEffect !== undefined
 }
 
-
-
 export function trackEffects(dep) {
-
+  // 看看dep之前有没有添加过，添加过的话 那么就不添加了
+  if (dep.has(activeEffect)) return
   dep.add(activeEffect)
   activeEffect.deps.push(dep)
 }

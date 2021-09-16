@@ -3,6 +3,10 @@ import { ref } from "../ref"
 
 
 describe('ref', () => {
+  it('happy path', () => {
+    const a = ref(1)
+    expect(a.value).toBe(1)
+  })
   it('should be reactive', () => {
     const num = ref(1)
 
@@ -14,7 +18,7 @@ describe('ref', () => {
 
     expect(dummy).toBe(1)
     expect(calls).toBe(1)
-    num.value++
+    num.value = 2
     expect(dummy).toBe(2)
     expect(calls).toBe(2)
     // 同样的值不会触发依赖更新
@@ -23,4 +27,18 @@ describe('ref', () => {
     expect(calls).toBe(2)
 
   })
+
+  it('should make nested properties reactive', () => {
+    const a = ref({
+      count: 1
+    })
+    let dummy;
+    effect(() => {
+      dummy = a.value.count
+    })
+    expect(dummy).toBe(1)
+    a.value.count = 2
+    expect(dummy).toBe(2)
+  })
+
 })

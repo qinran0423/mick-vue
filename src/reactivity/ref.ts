@@ -1,27 +1,32 @@
-import { isObject } from "../shared"
-import { trackEffects, triggerEffects } from "./effect"
+import { hasChanged, isObject } from "../shared"
+import { isTracking, trackEffects, triggerEffects } from "./effect"
 import { reactive } from "./reactive"
 
 
 class RefTmpl {
+  private _rawValue: any
   private _value: any
   private dep: any
   constructor(value) {
+    this._rawValue = value
     // 如果value 是对象 则需要用reactive进行响应式处理
     this._value = convert(value)
     this.dep = new Set()
   }
 
   get value() {
-    trackRefValue(this)
+    if (isTracking()) {
+      trackRefValue(this)
+    }
     return this._value
   }
 
   set value(newval) {
-    if (!Object.is(this._value, newval)) {
+    // hasChanged
+    if (hasChanged(this._rawValue, newval)) {
+      this._rawValue = newval
       this._value = convert(newval)
       triggerRefValue(this)
-
     }
 
   }
