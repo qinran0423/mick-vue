@@ -17,7 +17,7 @@ export function effect(fn, options: any = {}) {
 }
 
 // 创建一个副作用的类
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn: any
   deps = []
   active = true
