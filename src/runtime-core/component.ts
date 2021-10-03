@@ -14,6 +14,7 @@ export function setupComponent(instance) {
   // initProps
   // initSlots
 
+  // 初始化一个有状态的component
   setupStatefulComponent(instance)
 }
 
@@ -27,6 +28,7 @@ function setupStatefulComponent(instance: any) {
     handleSetupResult(instance, setupResult)
   }
 }
+
 function handleSetupResult(instance, setupResult: any) {
   // function  object
   // TODO
