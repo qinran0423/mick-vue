@@ -1,7 +1,7 @@
 {
   "name": "mick-vue",
   "version": "1.0.0",
-  "main": "lib/mick-bue.cjs.js",
+  "main": "lib/mick-vue.cjs.js",
   "module": "lib/mick-vue.esm.js",
   "repository": "git@github.com:qinran0423/mick-vue.git",
   "author": "qinran0423 <1156107187@qq.com>",
