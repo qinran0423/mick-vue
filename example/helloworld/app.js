@@ -7,7 +7,10 @@ export const App = {
     window.self = this
     return h('div', {
       id: 'root',
-      class: ['red', 'hard']
+      class: ['red', 'hard'],
+      onClick() {
+        console.log('click');
+      }
     },
       // this.$el => 返回 root element
       "hi," + this.msg

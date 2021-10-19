@@ -8,7 +8,6 @@ export function createVNode(type, props?, children?) {
     shapeFlags: getShapeFlag(type),
     el: null
   }
-  debugger
 
   if (typeof children === 'string') {
     vnode.shapeFlags |= ShapeFlags.TEXT_CHILDREN
