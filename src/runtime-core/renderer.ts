@@ -1,6 +1,6 @@
-import { isObject } from "../shared/index";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component"
+import { Fragment, Text } from "./vnode";
 
 export function render(vnode, container) {
   // patch
@@ -12,13 +12,39 @@ function patch(vnode, container) {
   // 处理组件
   // TODO判断是不是一个element类型
   // 如果是element
-  const { shapeFlags } = vnode
-  if (shapeFlags & ShapeFlags.ELEMENT) {
-    processElement(vnode, container)
-  } else if (shapeFlags & ShapeFlags.STATEFUL_COMPONENT) {
-    processComponent(vnode, container)
+  const { shapeFlags, type } = vnode
+
+  // Fragment -> 只渲染children 
+  switch (type) {
+    case Fragment:
+      processFragment(vnode, container)
+      break;
+    case Text:
+      processText(vnode, container)
+      break;
+    default:
+      if (shapeFlags & ShapeFlags.ELEMENT) {
+        processElement(vnode, container)
+      } else if (shapeFlags & ShapeFlags.STATEFUL_COMPONENT) {
+        processComponent(vnode, container)
+      }
+      break;
   }
+
 }
+
+
+function processText(vnode: any, container: any) {
+  const { children } = vnode;
+  const textNode = (vnode.el = document.createTextNode(children))
+  container.append(textNode)
+}
+
+function processFragment(vnode: any, container: any) {
+  mountChildren(vnode, container)
+}
+
+
 
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container)
@@ -33,20 +59,22 @@ function mountElement(vnode, container) {
   // children => string, array
   if (shapeFlags & ShapeFlags.TEXT_CHILDREN) {
     el.textContent = children
-    for (const key in props) {
-      const val = props[key]
 
-      const isOn = (key: string) => /^on[A-Z]/.test(key)
-      if (isOn(key)) {
-        const event = key.slice(2).toLowerCase()
-        el.addEventListener(event, val)
-      } else {
-        el.setAttribute(key, val)
-      }
-
-    }
   } else if (shapeFlags & ShapeFlags.ARRAY_CHILDREN) {
-    mountChildren(vnode, container)
+    mountChildren(vnode, el)
+  }
+
+  for (const key in props) {
+    const val = props[key]
+
+    const isOn = (key: string) => /^on[A-Z]/.test(key)
+    if (isOn(key)) {
+      const event = key.slice(2).toLowerCase()
+      el.addEventListener(event, val)
+    } else {
+      el.setAttribute(key, val)
+    }
+
   }
 
   container.append(el)
@@ -79,6 +107,5 @@ function setupRenderEffect(instance: any, initialVnode, container: any) {
   patch(subTree, container)
   initialVnode.el = subTree.el
 }
-
 
 
