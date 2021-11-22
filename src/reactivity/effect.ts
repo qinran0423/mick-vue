@@ -83,6 +83,7 @@ export function isTracking() {
 }
 
 export function trackEffects(dep) {
+  debugger
   // 看看dep之前有没有添加过，添加过的话 那么就不添加了
   if (dep.has(activeEffect)) return
   dep.add(activeEffect)
@@ -97,6 +98,7 @@ export function trigger(target, key) {
 
 
 export function triggerEffects(dep) {
+  debugger
   for (const effect of dep) {
     if (effect.scheduler) {
       effect.scheduler()

@@ -23,7 +23,7 @@ class RefTmpl {
   }
 
   set value(newval) {
-    // hasChanged
+    // hasCh  anged
     if (hasChanged(this._rawValue, newval)) {
       this._rawValue = newval
       this._value = convert(newval)

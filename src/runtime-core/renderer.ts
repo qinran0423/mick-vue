@@ -2,6 +2,7 @@ import { createAppAPI } from "./createApp";
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { createComponentInstance, setupComponent } from "./component"
 import { Fragment, Text } from "./vnode";
+import { effect } from "../reactivity/effect";
 
 
 export function createRenderer(options) {
@@ -98,14 +99,19 @@ export function createRenderer(options) {
   }
 
   function setupRenderEffect(instance: any, initialVnode, container: any) {
-    const { proxy } = instance
-    const subTree = instance.render.call(proxy)
+    effect(() => {
+      debugger
+      const { proxy } = instance
+      const subTree = instance.render.call(proxy)
+      console.log(subTree);
 
-    // vnode -> patch
-    // vnode -> element -> mountElement
+      // vnode -> patch
+      // vnode -> element -> mountElement
 
-    patch(subTree, container, instance)
-    initialVnode.el = subTree.el
+      patch(subTree, container, instance)
+      initialVnode.el = subTree.el
+    })
+
   }
 
 
