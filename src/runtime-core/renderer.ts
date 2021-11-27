@@ -67,6 +67,35 @@ export function createRenderer(options) {
     console.log('n1', n1);
     console.log('n2', n2);
 
+    const oldProps = n1.props || {}
+    const newprops = n2.props || {}
+
+    const el = (n2.el = n1.el)
+
+    patchProps(el, oldProps, newprops)
+
+  }
+
+
+  function patchProps(el, oldProps, newProps) {
+    if (oldProps !== newProps) {
+      for (const key in newProps) {
+        const prevProp = oldProps[key]
+        const nextProp = newProps[key]
+        if (prevProp !== nextProp) {
+          hostpatchProp(el, key, prevProp, nextProp)
+        }
+
+        if (oldProps !== {}) {
+          for (const key in oldProps) {
+            if (!(key in newProps)) {
+              hostpatchProp(el, key, oldProps[key], null)
+            }
+          }
+        }
+
+      }
+    }
 
   }
 
@@ -88,7 +117,7 @@ export function createRenderer(options) {
       const val = props[key]
 
 
-      hostpatchProp(el, key, val)
+      hostpatchProp(el, key, null, val)
     }
 
     hostinsert(el, container)
