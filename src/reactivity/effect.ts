@@ -53,6 +53,7 @@ function cleanupEffect(effect) {
   effect.deps.forEach((dep: any) => {
     dep.delete(effect)
   });
+  effect.deps.length = 0
 }
 
 // 创建一个依赖收集的集合
