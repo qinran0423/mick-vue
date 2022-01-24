@@ -4,6 +4,7 @@ import { createComponentInstance, setupComponent } from "./component"
 import { Fragment, Text } from "./vnode";
 import { effect } from "../reactivity/effect";
 import { shouldUpdateComponent } from "./componentUpdateUtils";
+import { queueJobs } from "./scheduler";
 
 
 export function createRenderer(options) {
@@ -340,6 +341,11 @@ export function createRenderer(options) {
 
       }
 
+    }, {
+      scheduler() {
+        console.log('update scheduler');
+        queueJobs(instance.update)
+      }
     })
 
   }
