@@ -53,5 +53,13 @@ describe('api: watch', () => {
     expect(dummy).toBe(1)
   })
 
+  it('immedidate', () => {
+    const count = ref(0)
+    const cb = jest.fn()
+    watch(count, cb, { immediate: true })
+    expect(cb).toHaveBeenCalledTimes(1)
+    count.value++
+    expect(cb).toHaveBeenCalledTimes(2)
+  })
 
 })

@@ -4,7 +4,8 @@ import { isRef } from "../reactivity/ref"
 import { isMap, isPlainObject, isSet, NOOP } from "../shared";
 
 interface WatchOptions {
-  deep: boolean;
+  immediate?: boolean;
+  deep?: boolean;
 }
 
 export function watch(source, cb, options?: WatchOptions) {
@@ -12,7 +13,7 @@ export function watch(source, cb, options?: WatchOptions) {
 }
 
 
-function doWatch(source: any, cb: any, { deep }: WatchOptions = { deep: false }) {
+function doWatch(source: any, cb: any, { immediate, deep }: WatchOptions = { deep: false }) {
   let getter: () => any;
   if (isRef(source)) {
     getter = () => source.value;
@@ -28,15 +29,22 @@ function doWatch(source: any, cb: any, { deep }: WatchOptions = { deep: false })
     getter = () => traverse(baseGetter());
   }
 
-  let newValue, oldValue;
+  let newValue, oldValue
+  const job = () => {
+    newValue = effect.run();
+    cb(newValue, oldValue);
+    oldValue = newValue;
+  }
   const effect = new ReactiveEffect(getter,
-    () => {
-      newValue = effect.run();
-      cb(newValue, oldValue);
-      oldValue = newValue;
-    }
+    job
   );
-  oldValue = effect.run();
+
+  if (immediate) {
+    job()
+  } else {
+    oldValue = effect.run();
+  }
+
 }
 
 function traverse(value, seen = new Set()) {
