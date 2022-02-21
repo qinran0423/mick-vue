@@ -9,8 +9,9 @@ export function effect(fn, options: any = {}) {
   // 将 stop  scheduler合并到_effect上
   extend(_effect, options)
 
-
-  _effect.run()
+  if (!options || !options.lazy) {
+    _effect.run()
+  }
   const runner: any = _effect.run.bind(_effect)
   runner.effect = _effect
   return runner

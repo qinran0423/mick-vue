@@ -44,11 +44,11 @@ function convert(value) {
 }
 
 
-function trackRefValue(ref) {
+export function trackRefValue(ref) {
   trackEffects(ref.dep)
 }
 
-function triggerRefValue(ref) {
+export function triggerRefValue(ref) {
   triggerEffects(ref.dep)
 }
 
