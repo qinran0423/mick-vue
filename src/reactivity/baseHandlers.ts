@@ -1,4 +1,4 @@
-import { extend, isObject } from "../shared"
+import { extend, hasChanged, isObject } from "../shared"
 import { track, trigger } from "./effect"
 import { reactive, ReactiveFlags, readonly } from "./reactive"
 
@@ -38,9 +38,11 @@ function createGetter(isReadonly = false, shallow = false) {
 
 function createSetter() {
   return function set(target, key, val) {
-
+    const oldValue = target[key]
     const res = Reflect.set(target, key, val)
-    trigger(target, key)
+    if (hasChanged(val, oldValue)) {
+      trigger(target, key)
+    }
     return res
   }
 }
