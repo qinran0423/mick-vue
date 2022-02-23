@@ -157,4 +157,19 @@ describe('effect', () => {
     stop(runner)
     expect(onStop).toBeCalledTimes(1)
   })
+
+
+  it('should not be triggered when set with the same value', () => {
+    const obj = reactive({ foo: 1 })
+    let dummy = 0
+    effect(() => {
+      dummy++
+      console.log(obj.foo);
+    })
+    obj.foo = 1
+    expect(dummy).toBe(1)
+
+    obj.foo = 2
+    expect(dummy).toBe(2)
+  })
 })

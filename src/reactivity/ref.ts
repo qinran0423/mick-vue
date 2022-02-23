@@ -45,7 +45,9 @@ function convert(value) {
 
 
 export function trackRefValue(ref) {
-  trackEffects(ref.dep)
+  if (isTracking()) {
+    trackEffects(ref.dep)
+  }
 }
 
 export function triggerRefValue(ref) {
