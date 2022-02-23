@@ -1,5 +1,5 @@
-import { extend, hasChanged, isObject } from "../shared"
-import { track, trigger } from "./effect"
+import { extend, hasChanged, hasOwn, isObject } from "../shared"
+import { ITERATE_KEY, track, trigger } from "./effect"
 import { reactive, ReactiveFlags, readonly } from "./reactive"
 
 const get = createGetter()
@@ -47,17 +47,48 @@ function createSetter() {
   }
 }
 
+function deleteProperty(target, key) {
+  const hadKey = hasOwn(target, key)
+
+  const result = Reflect.deleteProperty(target, key)
+
+  if (result && hadKey) {
+    trigger(target, key)
+  }
+
+  return result
+}
 
 
+function has(target, key) {
+
+  const result = Reflect.has(target, key)
+  track(target, key)
+  return result
+}
+
+
+function ownKeys(target) {
+  track(target, ITERATE_KEY)
+  return Reflect.ownKeys(target)
+}
 export const mutableHandler = {
   get,
-  set
+  set,
+  deleteProperty,
+  has,
+  ownKeys
 }
 
 export const readonlyHandler = {
   get: readonlyGet,
   set(target, key, val) {
     console.warn(`key: ${key} set 失败  因为target是readonly`, target);
+
+    return true
+  },
+  deleteProperty(target, key) {
+    console.warn(`key: ${key} del 失败  因为target是readonly`, target);
 
     return true
   }

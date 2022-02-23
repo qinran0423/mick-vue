@@ -1,5 +1,7 @@
 import { extend } from "../shared"
 
+export const ITERATE_KEY = Symbol()
+
 let activeEffect
 let shouldTrack
 export function effect(fn, options: any = {}) {

@@ -22,4 +22,16 @@ describe('readonly', () => {
     user.age = 11
     expect(console.warn).toBeCalled()
   })
+
+
+  it('warn then call del', () => {
+    console.warn = jest.fn()
+    const user = readonly({
+      age: 10
+    })
+
+    delete user.age
+    expect(console.warn).toBeCalled()
+
+  })
 })
