@@ -42,6 +42,22 @@ describe('ref', () => {
     expect(dummy).toBe(2)
   })
 
+  it('should not trigger when the same value', () => {
+    const a = ref({
+      foo: 1
+    })
+    let dummy = 0
+    effect(() => {
+      dummy++
+      console.log(a.value.foo);
+
+    })
+    expect(dummy).toBe(1)
+    a.value = { foo: 1 }
+    expect(dummy).toBe(2)
+
+  })
+
   it('isRef', () => {
     const a = ref(1)
     const user = reactive({

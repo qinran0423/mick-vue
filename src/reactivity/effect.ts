@@ -102,7 +102,7 @@ export function trigger(target, type, key) {
     deps.push(depsMap.get(key))
   }
 
-  if (type === TriggerOpTyes.ADD) {
+  if (type === TriggerOpTyes.ADD || type === TriggerOpTyes.DELETE) {
     deps.push(depsMap.get(ITERATE_KEY))
   }
 
