@@ -117,6 +117,24 @@ describe('effect', () => {
     expect(dummy).toBe(true)
   })
 
+  it('should observe enumeration', () => {
+    let dummy = 0
+    const numbers = reactive({ num1: 3 })
+    effect(() => {
+      dummy = 0
+      for (const key in numbers) {
+        dummy += numbers[key]
+      }
+    })
+
+    expect(dummy).toBe(3)
+    numbers.num2 = 4
+    expect(dummy).toBe(7)
+    delete numbers.num1
+    expect(dummy).toBe(4)
+  })
+
+
   it("should observe function call chains", () => {
     let dummy;
     const counter = reactive({ num: 0 });

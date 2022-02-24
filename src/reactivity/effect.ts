@@ -1,4 +1,5 @@
 import { extend } from "../shared"
+import { TriggerOpTyes } from "./operations"
 
 export const ITERATE_KEY = Symbol()
 
@@ -93,10 +94,25 @@ export function trackEffects(dep) {
   activeEffect.deps.push(dep)
 }
 
-export function trigger(target, key) {
+export function trigger(target, type, key) {
   let depsMap = targetMap.get(target)
-  let dep = depsMap.get(key)
-  triggerEffects(dep)
+  let deps: any = []
+
+  if (key !== void 0) {
+    deps.push(depsMap.get(key))
+  }
+
+  if (type === TriggerOpTyes.ADD) {
+    deps.push(depsMap.get(ITERATE_KEY))
+  }
+
+  const effects: any = []
+  for (const dep of deps) {
+    if (dep) {
+      effects.push(...dep)
+    }
+  }
+  triggerEffects(effects)
 }
 
 
