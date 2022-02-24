@@ -1,7 +1,7 @@
 import { extend, hasChanged, hasOwn, isObject } from "../shared"
 import { ITERATE_KEY, track, trigger } from "./effect"
 import { TriggerOpTyes } from "./operations"
-import { reactive, ReactiveFlags, readonly } from "./reactive"
+import { reactive, ReactiveFlags, readonly, toRaw } from "./reactive"
 
 const get = createGetter()
 const set = createSetter()
@@ -17,6 +17,8 @@ function createGetter(isReadonly = false, shallow = false) {
       return !isReadonly
     } else if (key === ReactiveFlags.IS_READONLY) {
       return isReadonly
+    } else if (key === ReactiveFlags.RAW) {
+      return target
     }
 
     if (shallow) {
@@ -38,17 +40,19 @@ function createGetter(isReadonly = false, shallow = false) {
 
 
 function createSetter() {
-  return function set(target, key, val) {
+  return function set(target, key, val, recevier) {
     const oldValue = target[key]
     const hadKey = hasOwn(target, key)
     const res = Reflect.set(target, key, val)
 
-
-    if (!hadKey) {
-      trigger(target, TriggerOpTyes.ADD, key)
-    } else if (hasChanged(val, oldValue)) {
-      trigger(target, TriggerOpTyes.SET, key)
+    if (target === toRaw(recevier)) {
+      if (!hadKey) {
+        trigger(target, TriggerOpTyes.ADD, key)
+      } else if (hasChanged(val, oldValue)) {
+        trigger(target, TriggerOpTyes.SET, key)
+      }
     }
+
 
     return res
   }

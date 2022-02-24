@@ -248,4 +248,30 @@ describe('effect', () => {
     obj.foo = 2
     expect(dummy).toBe(2)
   })
+
+  it('should not be triggered when the value and the old value both are NaN', () => {
+    const obj = reactive({
+      foo: NaN
+    })
+    const fnSpy = jest.fn(() => obj.foo)
+    effect(fnSpy)
+    obj.foo = NaN
+    expect(fnSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should observe propertis on the prototype chain', () => {
+    let dummy
+    const counter = reactive({ num: 0 })
+    const parentCounter = reactive({ num: 2 })
+    Object.setPrototypeOf(counter, parentCounter)
+    effect(() => (dummy = counter.num))
+
+    expect(dummy).toBe(0)
+    delete counter.num
+    expect(dummy).toBe(2)
+    parentCounter.num = 4
+    expect(dummy).toBe(4)
+    counter.num = 3
+    expect(dummy).toBe(3)
+  })
 })

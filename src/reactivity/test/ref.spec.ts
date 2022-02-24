@@ -42,7 +42,7 @@ describe('ref', () => {
     expect(dummy).toBe(2)
   })
 
-  it('should not trigger when the same value', () => {
+  it('should not be triggered when set with the same value', () => {
     const a = ref({
       foo: 1
     })
