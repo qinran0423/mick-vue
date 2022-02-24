@@ -274,4 +274,15 @@ describe('effect', () => {
     counter.num = 3
     expect(dummy).toBe(3)
   })
+
+
+  it('should observe implicit array length changes', () => {
+    let dummy
+    const list = reactive(['Hello'])
+    effect(() => (dummy = list.join(' ')))
+
+    expect(dummy).toBe('Hello')
+    list[1] = 'World'
+    expect(dummy).toBe('Hello World')
+  })
 })

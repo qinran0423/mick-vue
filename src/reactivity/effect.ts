@@ -1,4 +1,4 @@
-import { extend } from "../shared"
+import { extend, isArray } from "../shared"
 import { TriggerOpTyes } from "./operations"
 
 export const ITERATE_KEY = Symbol()
@@ -102,7 +102,13 @@ export function trigger(target, type, key) {
     deps.push(depsMap.get(key))
   }
 
-  if (type === TriggerOpTyes.ADD || type === TriggerOpTyes.DELETE) {
+  if (type === TriggerOpTyes.ADD) {
+    if (!isArray(target)) {
+      deps.push(depsMap.get(ITERATE_KEY))
+    } else {
+      deps.push(depsMap.get('length'))
+    }
+  } else if (type === TriggerOpTyes.DELETE) {
     deps.push(depsMap.get(ITERATE_KEY))
   }
 

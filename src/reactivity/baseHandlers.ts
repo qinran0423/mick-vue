@@ -1,4 +1,4 @@
-import { extend, hasChanged, hasOwn, isObject } from "../shared"
+import { extend, hasChanged, hasOwn, isArray, isObject } from "../shared"
 import { ITERATE_KEY, track, trigger } from "./effect"
 import { TriggerOpTyes } from "./operations"
 import { reactive, ReactiveFlags, readonly, toRaw } from "./reactive"
@@ -42,7 +42,7 @@ function createGetter(isReadonly = false, shallow = false) {
 function createSetter() {
   return function set(target, key, val, recevier) {
     const oldValue = target[key]
-    const hadKey = hasOwn(target, key)
+    const hadKey = isArray(target) ? Number(key) < target.length : hasOwn(target, key)
     const res = Reflect.set(target, key, val)
 
     if (target === toRaw(recevier)) {
