@@ -96,6 +96,9 @@ export function trackEffects(dep) {
 
 export function trigger(target, type, key) {
   let depsMap = targetMap.get(target)
+  if (!depsMap) {
+    return
+  }
   let deps: any = []
 
   if (key !== void 0) {

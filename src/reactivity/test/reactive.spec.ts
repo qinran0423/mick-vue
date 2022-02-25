@@ -11,6 +11,19 @@ describe('reactive', () => {
     expect(isProxy(observaed)).toBe(true)
   })
 
+  it('proto', () => {
+    const obj = {}
+    const reactiveObj = reactive(obj)
+    expect(isReactive(reactiveObj)).toBe(true)
+
+    const prototype = reactiveObj['__proto__']
+    const otherObj = { data: ['a'] }
+    expect(isReactive(otherObj)).toBe(false)
+    const reactiveOther = reactive(otherObj)
+    expect(isReactive(reactiveOther)).toBe(true)
+    expect(reactiveOther.data[0]).toBe('a')
+  })
+
   it('nested reactive', () => {
     const original = {
       nested: {
@@ -23,4 +36,5 @@ describe('reactive', () => {
     expect(isReactive(observed.array)).toBe(true)
     expect(isReactive(observed.array[0])).toBe(true)
   })
+
 })
