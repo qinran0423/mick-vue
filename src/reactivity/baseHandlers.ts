@@ -9,6 +9,24 @@ const set = createSetter()
 const readonlyGet = createGetter(true)
 const shallowReadonlyGet = createGetter(true, true)
 
+
+const arrayInstrumentations = {}
+
+  ;['includes', 'indexOf', 'lastIndexOf'].forEach(method => {
+    const originMethods = Array.prototype[method]
+    arrayInstrumentations[method] = function (...args) {
+      //this 是代理对象， 先在代理对象中查找  结果存在res中 
+      let res = originMethods.apply(this, args)
+
+      if (res === false) {
+        res = originMethods.apply(toRaw(this), args)
+      }
+
+      return res
+    }
+  })
+
+
 function createGetter(isReadonly = false, shallow = false) {
   return function get(target, key) {
     const res = Reflect.get(target, key)
@@ -21,18 +39,21 @@ function createGetter(isReadonly = false, shallow = false) {
       return target
     }
 
-    if (shallow) {
-      return res
+    if (isArray(target) && hasOwn(arrayInstrumentations, key)) {
+      return Reflect.get(arrayInstrumentations, key)
     }
 
-    if (isObject(res)) {
-      return isReadonly ? readonly(res) : reactive(res)
+    if (shallow) {
+      return res
     }
 
     if (!isReadonly) {
       // 如果是嵌套对象 则需遍历执行reactive
       track(target, key)
+    }
 
+    if (isObject(res)) {
+      return isReadonly ? readonly(res) : reactive(res)
     }
     return res
   }
@@ -80,7 +101,7 @@ function has(target, key) {
 
 
 function ownKeys(target) {
-  track(target, ITERATE_KEY)
+  track(target, isArray(target) ? 'length' : ITERATE_KEY)
   return Reflect.ownKeys(target)
 }
 export const mutableHandler = {

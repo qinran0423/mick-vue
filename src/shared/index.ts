@@ -42,3 +42,4 @@ export const toHandlerKey = (str: string) => {
 
 
 export const NOOP = () => { }
+export const isSymbol = (val) => typeof val === 'symbol'
