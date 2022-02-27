@@ -5,6 +5,15 @@ export const ITERATE_KEY = Symbol()
 
 let activeEffect
 let shouldTrack
+export function pauseTracking() {
+  shouldTrack = false
+}
+
+export function resetTracking() {
+  shouldTrack = true
+}
+
+
 export function effect(fn, options: any = {}) {
   // 每一个副作用函数会基于ReactiveEffect类生成实例
   const _effect = new ReactiveEffect(fn, options.scheduler)

@@ -31,7 +31,8 @@ describe('reactive/Array', () => {
   it('Array identity methods should work with raw values', () => {
 
     const raw = {}
-    const arr = reactive([raw])
+    const arr = reactive([{}, {}])
+    arr.push(raw)
     expect(arr.includes(arr[0])).toBe(true)
     expect(arr.includes(raw)).toBe(true)
   })

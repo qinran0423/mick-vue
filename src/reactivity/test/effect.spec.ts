@@ -300,4 +300,16 @@ describe('effect', () => {
     list.pop()
     expect(dummy).toBe('Hello')
   })
+
+  it('should observe iteration', () => {
+    let dummy
+    const list = reactive(['Hello'])
+    effect(() => (dummy = list.join(' ')))
+
+    expect(dummy).toBe('Hello')
+    list.push('World!')
+    expect(dummy).toBe('Hello World!')
+    list.shift()
+    expect(dummy).toBe('World!')
+  })
 })

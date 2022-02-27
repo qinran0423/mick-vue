@@ -1,5 +1,5 @@
 import { extend, hasChanged, hasOwn, isArray, isObject } from "../shared"
-import { ITERATE_KEY, track, trigger } from "./effect"
+import { ITERATE_KEY, pauseTracking, resetTracking, track, trigger } from "./effect"
 import { TriggerOpTyes } from "./operations"
 import { reactive, ReactiveFlags, readonly, toRaw } from "./reactive"
 
@@ -10,21 +10,35 @@ const readonlyGet = createGetter(true)
 const shallowReadonlyGet = createGetter(true, true)
 
 
-const arrayInstrumentations = {}
-
-  ;['includes', 'indexOf', 'lastIndexOf'].forEach(method => {
-    const originMethods = Array.prototype[method]
-    arrayInstrumentations[method] = function (...args) {
-      //this 是代理对象， 先在代理对象中查找  结果存在res中 
-      let res = originMethods.apply(this, args)
-
-      if (res === false) {
-        res = originMethods.apply(toRaw(this), args)
+const arrayInstrumentations = createArrayInstrumentations()
+function createArrayInstrumentations() {
+  const instrumentations = {}
+    ;['includes', 'indexOf', 'lastIndexOf'].forEach(key => {
+      instrumentations[key] = function (...args) {
+        const arr = toRaw(this)
+        //this 是代理对象， 先在代理对象中查找  结果存在res中 
+        let res = arr[key](...args)
+        if (res === -1 || res === false) {
+          return arr[key](...args.map(toRaw))
+        } else {
+          return res
+        }
       }
+    })
 
-      return res
-    }
-  })
+    ;['push', 'pop', 'shift', 'unshift', 'splice'].forEach(key => {
+      instrumentations[key] = function (...args) {
+        pauseTracking()
+        const res = toRaw(this)[key].apply(this, args)
+        resetTracking()
+
+        return res
+      }
+    })
+
+  return instrumentations
+}
+
 
 
 function createGetter(isReadonly = false, shallow = false) {
@@ -129,3 +143,4 @@ export const readonlyHandler = {
 export const shallowReadonlyHandlers = extend({}, readonlyHandler, {
   get: shallowReadonlyGet
 })
+
