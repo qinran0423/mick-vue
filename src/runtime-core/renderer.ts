@@ -90,10 +90,13 @@ export function createRenderer(options) {
     const c1 = n1.children
     const { shapeFlags } = n2
     const c2 = n2.children
+    // 判断新的值是否是文本节点
     if (shapeFlags & ShapeFlags.TEXT_CHILDREN) {
+      // 老的是数组节点 需要删除所有的子节点
       if (prevShapeFlags & ShapeFlags.ARRAY_CHILDREN) {
         unmountChildren(n1.children)
       }
+      // 重新设置text
       if (c1 !== c2) {
         hostSetElementText(container, c2)
       }
