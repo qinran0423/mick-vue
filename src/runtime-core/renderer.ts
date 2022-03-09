@@ -182,6 +182,15 @@ export function createRenderer(options) {
 
       // 新节点key和索引的映射表
       const keyToNewIndexMap = new Map()
+      const newIndexToOldIndexMap = new Array(toBePatched)
+
+      let moved = false
+      let maxNewIndexSoFar = 0
+
+      for (let i = 0; i < toBePatched; i++) {
+        newIndexToOldIndexMap[i] = 0
+      }
+
       // 遍历新节点 设置映射表
       for (let i = s2; i <= e2; i++) {
         const nextChild = c2[i]
@@ -216,11 +225,40 @@ export function createRenderer(options) {
           // 如果没找到对应的节点  则移除旧节点
           hostRemove(prevChild.el)
         } else {
+          if (newIndex >= maxNewIndexSoFar) {
+            maxNewIndexSoFar = newIndex
+          } else {
+            moved = true
+          }
+          newIndexToOldIndexMap[newIndex - s2] = i + 1;
           // 找到了则新老节点打补丁
           patch(prevChild, c2[newIndex], container, parentComponent, null)
           patched++
         }
       }
+
+      const increasingNewIndexSequence = moved ? getSequence(newIndexToOldIndexMap) : []
+      let j = increasingNewIndexSequence.length - 1
+
+      for (let i = toBePatched - 1; i >= 0; i--) {
+        const nextIndex = i + s2
+        const nextChild = c2[nextIndex]
+        const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : null
+
+        if (newIndexToOldIndexMap[i] === 0) {
+          patch(null, nextChild, container, parentComponent, anchor)
+        }
+
+        if (moved) {
+          if (j < 0 || i !== increasingNewIndexSequence[j]) {
+            console.log('移动位置');
+            hostinsert(nextChild.el, container, anchor)
+          } else {
+            j--;
+          }
+        }
+      }
+
     }
 
   }
