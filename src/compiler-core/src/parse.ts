@@ -24,7 +24,6 @@ function parseChildren(context, ancestors) {
       node = parseInterpolation(context)
     } else if (s[0] === '<') {
       if (/[a-z]/i.test(s[1])) {
-        console.log('parse element');
         node = parseElement(context, ancestors)
       }
     }
@@ -35,7 +34,6 @@ function parseChildren(context, ancestors) {
     nodes.push(node)
   }
 
-  console.log('nodes', nodes);
 
 
   return nodes
@@ -77,7 +75,6 @@ function parseText(context: any): any {
 
 
   const content = parseTextData(context, endIndex)
-  console.log('content----', content);
 
   return {
     type: NodeTypes.TEXT,
