@@ -1,5 +1,5 @@
 import { NodeTypes } from "./ast"
-import { helperMapName, TO_DISPLAT_STRING } from "./transforms/runtimeHelpers"
+import { CREARE_ELEMENT_VNODE, helperMapName, TO_DISPLAT_STRING } from "./transforms/runtimeHelpers"
 
 
 export function generate(ast) {
@@ -48,6 +48,9 @@ function genNode(node: any, context) {
     case NodeTypes.SIMPLE_EXPRESSION:
       genExpression(node, context)
       break;
+    case NodeTypes.ELEMENT:
+      genElement(node, context)
+      break;
     default:
       break;
   }
@@ -86,3 +89,16 @@ function genExpression(node, context) {
   push(`${node.content}`)
 }
 
+function genElement(node, context) {
+  const { push, helper } = context
+  const { tag, children } = node
+  push(`${helper(CREARE_ELEMENT_VNODE)}("${tag}"),null, `)
+
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
+
+    genNode(child, context)
+  }
+
+  push(") ")
+}

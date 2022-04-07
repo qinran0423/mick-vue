@@ -15,7 +15,7 @@ function traverseNode(node: any, context) {
   const nodeTransforms = context.nodeTransforms
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i]
-    transform(node)
+    transform(node, context)
   }
 
   switch (node.type) {
