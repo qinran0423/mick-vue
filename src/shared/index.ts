@@ -1,4 +1,6 @@
 
+export * from './toDisplayString'
+
 export const isMap = (val: unknown): val is Map<any, any> =>
   toTypeString(val) === '[object Map]'
 export const isSet = (val: unknown): val is Set<any> =>
