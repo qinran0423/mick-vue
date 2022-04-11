@@ -1,3 +1,4 @@
+import { isString } from "../../shared"
 import { NodeTypes } from "./ast"
 import { CREARE_ELEMENT_VNODE, helperMapName, TO_DISPLAT_STRING } from "./transforms/runtimeHelpers"
 
@@ -15,7 +16,7 @@ export function generate(ast) {
 
 
   push(`function ${functionName}(${signature}){`)
-  push(`return`)
+  push(`return `)
   genNode(ast.codegenNode, context)
   push("}")
 
@@ -51,6 +52,10 @@ function genNode(node: any, context) {
     case NodeTypes.ELEMENT:
       genElement(node, context)
       break;
+    case NodeTypes.COMPOUND_EXPRESSION:
+      genCompoundExpression(node, context)
+      break;
+
     default:
       break;
   }
@@ -91,14 +96,46 @@ function genExpression(node, context) {
 
 function genElement(node, context) {
   const { push, helper } = context
-  const { tag, children } = node
-  push(`${helper(CREARE_ELEMENT_VNODE)}("${tag}"),null, `)
+  const { tag, children, props } = node
 
+  push(`${helper(CREARE_ELEMENT_VNODE)}(`)
+  genNodeList(genNullable([tag, props, children]), context)
+  push(")")
+}
+
+function genNodeList(nodes, context) {
+  const { push } = context
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]
+    if (isString(node)) {
+      push(node)
+
+    } else {
+      genNode(node, context)
+    }
+
+    if (i < nodes.length - 1) {
+      push(", ")
+    }
+  }
+}
+
+function genNullable(args: any) {
+  return args.map((arg) => arg || "null")
+}
+
+function genCompoundExpression(node: any, context: any) {
+  const { push } = context
+  const children = node.children
   for (let i = 0; i < children.length; i++) {
     const child = children[i]
-
-    genNode(child, context)
+    if (isString(child)) {
+      push(child)
+    } else {
+      genNode(child, context)
+    }
   }
-
-  push(") ")
 }
+
+
