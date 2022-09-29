@@ -9,7 +9,6 @@ export const enum NodeTypes {
   COMPOUND_EXPRESSION
 }
 
-
 export function createVNodeCall(context, tag, props, children) {
   context.helper(CREARE_ELEMENT_VNODE)
   return {

@@ -1,14 +1,9 @@
-import { NodeTypes } from "../ast";
-import { isText } from "../utils";
-
+import { NodeTypes } from "../ast"
+import { isText } from "../utils"
 
 export function transformText(node) {
-
-
-
   if (node.type === NodeTypes.ELEMENT) {
     return () => {
-
       const { children } = node
 
       let currentContainer
@@ -33,13 +28,11 @@ export function transformText(node) {
               j--
             } else {
               currentContainer = undefined
-              break;
+              break
             }
           }
         }
-
       }
     }
-
   }
 }
