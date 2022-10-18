@@ -12,31 +12,35 @@ export function transform(root, options = {}) {
 }
 
 function traverseNode(node: any, context) {
+  // 节点转换函数
   const nodeTransforms = context.nodeTransforms
   const exitFns: any = []
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i]
+    // 有些转换函数会设计一个退出函数，在处理完子节点后执行
     const onExit = transform(node, context)
     if (onExit) exitFns.push(onExit)
   }
 
   switch (node.type) {
     case NodeTypes.INTERPOLATION:
+      // 需要导入toString辅助函数
       context.helper(TO_DISPLAT_STRING)
-      break;
+      break
     case NodeTypes.ROOT:
     case NodeTypes.ELEMENT:
+      // 遍历子节点
       traverseChildren(node, context)
-      break;
+      break
     default:
-      break;
+      break
   }
 
+  // 执行转换函数返回的退出函数
   let i = exitFns.length
   while (i--) {
-    exitFns[i]();
+    exitFns[i]()
   }
-
 }
 
 function traverseChildren(node: any, context: any) {
@@ -59,7 +63,6 @@ function createTransformsContext(root, options) {
   }
 
   return context
-
 }
 
 function createRootCodegen(root: any) {
@@ -70,4 +73,3 @@ function createRootCodegen(root: any) {
     root.codegenNode = root.children[0]
   }
 }
-

@@ -76,7 +76,6 @@ function parseTextData(context: any, length) {
 }
 
 function parseElement(context, ancestors) {
-  // 1.解析tag
   const element: any = parseTag(context, TagType.Start)
   ancestors.push(element)
   element.children = parseChildren(context, ancestors)
@@ -101,7 +100,6 @@ function startsWithEndTagOpen(source, tag) {
 function parseTag(context: any, type: TagType) {
   const match: any = /^<\/?([a-z]*)/i.exec(context.source)
   const tag = match[1]
-  // 2.删除处理完成的代码
   advanceBy(context, match[0].length)
   advanceBy(context, 1)
 
