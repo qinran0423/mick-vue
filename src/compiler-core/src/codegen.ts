@@ -1,7 +1,10 @@
 import { isString } from "../../shared"
 import { NodeTypes } from "./ast"
-import { CREARE_ELEMENT_VNODE, helperMapName, TO_DISPLAT_STRING } from "./transforms/runtimeHelpers"
-
+import {
+  CREARE_ELEMENT_VNODE,
+  helperMapName,
+  TO_DISPLAT_STRING
+} from "./transforms/runtimeHelpers"
 
 export function generate(ast) {
   const context = createCodegenContext()
@@ -12,8 +15,6 @@ export function generate(ast) {
   const functionName = "render"
   const args = ["_ctx", "_cache"]
   const signature = args.join(", ")
-
-
 
   push(`function ${functionName}(${signature}){`)
   push(`return `)
@@ -31,41 +32,40 @@ function genFunctionPreambale(ast, context) {
   const aliasHeplers = (s) => `${helperMapName[s]}: _${helperMapName[s]}`
 
   if (ast.helpers.length > 0) {
-    push(`const { ${ast.helpers.map(aliasHeplers).join(", ")} } = ${VueBinging}`)
+    push(
+      `const { ${ast.helpers.map(aliasHeplers).join(", ")} } = ${VueBinging}`
+    )
   }
   push("\n")
   push("return ")
 }
 
 function genNode(node: any, context) {
-
   switch (node.type) {
     case NodeTypes.TEXT:
       genText(node, context)
-      break;
+      break
     case NodeTypes.INTERPOLATION:
       geninterpolation(node, context)
-      break;
+      break
     case NodeTypes.SIMPLE_EXPRESSION:
       genExpression(node, context)
-      break;
-    case NodeTypes.ELEMENT:
+      break
+    case NodeTypes.VNODE_CALL:
       genElement(node, context)
-      break;
+      break
     case NodeTypes.COMPOUND_EXPRESSION:
       genCompoundExpression(node, context)
-      break;
+      break
 
     default:
-      break;
+      break
   }
-
-
 }
 
 function createCodegenContext() {
   const context = {
-    code: '',
+    code: "",
     push(source) {
       context.code += source
     },
@@ -80,7 +80,6 @@ function genText(node, context) {
   const { push } = context
   push(` '${node.content}'`)
 }
-
 
 function geninterpolation(node, context) {
   const { push, helper } = context
@@ -110,7 +109,6 @@ function genNodeList(nodes, context) {
     const node = nodes[i]
     if (isString(node)) {
       push(node)
-
     } else {
       genNode(node, context)
     }
@@ -137,5 +135,3 @@ function genCompoundExpression(node: any, context: any) {
     }
   }
 }
-
-

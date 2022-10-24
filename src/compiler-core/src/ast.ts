@@ -6,13 +6,15 @@ export const enum NodeTypes {
   ELEMENT,
   TEXT,
   ROOT,
-  COMPOUND_EXPRESSION
+  COMPOUND_EXPRESSION,
+  // codegen
+  VNODE_CALL
 }
 
 export function createVNodeCall(context, tag, props, children) {
   context.helper(CREARE_ELEMENT_VNODE)
   return {
-    type: NodeTypes.ELEMENT,
+    type: NodeTypes.VNODE_CALL,
     tag,
     props,
     children
