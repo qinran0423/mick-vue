@@ -1,0 +1,37 @@
+lockfileVersion: 5.4
+
+importers:
+
+  packages/compiler-core:
+    specifiers:
+      '@mick-vue/shared': workspace:^1.0.0
+    dependencies:
+      '@mick-vue/shared': link:../shared
+
+  packages/reactivity:
+    specifiers:
+      '@mick-vue/shared': workspace:^1.0.0
+    dependencies:
+      '@mick-vue/shared': link:../shared
+
+  packages/runtime-core:
+    specifiers:
+      '@mick-vue/reactivity': workspace:^1.0.0
+      '@mick-vue/shared': workspace:^1.0.0
+    dependencies:
+      '@mick-vue/reactivity': link:../reactivity
+      '@mick-vue/shared': link:../shared
+
+  packages/runtime-dom:
+    specifiers:
+      '@mick-vue/runtime-core': workspace:^1.0.0
+    dependencies:
+      '@mick-vue/runtime-core': link:../runtime-core
+
+  packages/vue:
+    specifiers:
+      '@mick-vue/compiler-core': workspace:^1.0.0
+      '@mick-vue/runtime-dom': workspace:^1.0.0
+    dependencies:
+      '@mick-vue/compiler-core': link:../compiler-core
+      '@mick-vue/runtime-dom': link:../runtime-dom
