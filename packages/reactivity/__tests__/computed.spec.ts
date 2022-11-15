@@ -2,9 +2,8 @@ import { computed } from "../src/computed"
 import { effect } from "../src/effect"
 import { reactive } from "../src/reactive"
 
-
-describe('computed', () => {
-  it('happy path', () => {
+describe("computed", () => {
+  it("happy path", () => {
     // ref
     // value
     // 1. 缓存
@@ -19,7 +18,7 @@ describe('computed', () => {
     expect(age.value).toBe(1)
   })
 
-  it('should computed lazily', () => {
+  it("should computed lazily", () => {
     const value = reactive({
       foo: 1
     })
@@ -34,7 +33,7 @@ describe('computed', () => {
     expect(cValue.value).toBe(1)
     expect(getter).toHaveBeenCalledTimes(1)
 
-    // // should not compute again 
+    // // should not compute again
     cValue.value
     expect(getter).toHaveBeenCalledTimes(1)
 
@@ -51,7 +50,7 @@ describe('computed', () => {
     expect(getter).toHaveBeenCalledTimes(2)
   })
 
-  it('should trigger effect', () => {
+  it("should trigger effect", () => {
     const value = reactive({
       foo: 1
     })

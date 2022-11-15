@@ -1,37 +1,33 @@
-import { getCurrentInstance } from "./component";
+import { getCurrentInstance } from "./component"
 
-export function provide (key, value) {
+export function provide(key, value) {
   // 存储
   // key value
   const currentInstance: any = getCurrentInstance()
 
-  if(currentInstance) {
+  if (currentInstance) {
     let { provides } = currentInstance
     const parentProvides = currentInstance.parent.provides
-    
+
     // init
-    if(provides === parentProvides) {
+    if (provides === parentProvides) {
       provides = currentInstance.provides = Object.create(parentProvides)
     }
 
     provides[key] = value
   }
-
 }
 
-
-export function inject (key, defaultValue) {
+export function inject(key, defaultValue) {
   // 取
   const currentInstance: any = getCurrentInstance()
 
-  if(currentInstance) {
+  if (currentInstance) {
+    const parentProvides = currentInstance.parent.provides
 
-    const parentProvides = currentInstance.parent.provides 
-
-    if(key in parentProvides) {
-
+    if (key in parentProvides) {
       return parentProvides[key]
-    } else if(defaultValue) {
+    } else if (defaultValue) {
       return defaultValue
     }
   }

@@ -2,29 +2,25 @@ import { ref } from "@mick-vue/reactivity"
 import { reactive } from "@mick-vue/reactivity"
 import { watch } from "../apiWatch"
 
-
-describe('api: watch', () => {
-  it('watching single source: ref', async () => {
+describe("api: watch", () => {
+  it("watching single source: ref", async () => {
     const count = ref(0)
     let dummy
-    watch(
-      count,
-      (count, prevCount) => {
-        dummy = [count, prevCount]
+    watch(count, (count, prevCount) => {
+      dummy = [count, prevCount]
 
-        count + 1
-        if (prevCount) {
-          prevCount + 1
-        }
+      count + 1
+      if (prevCount) {
+        prevCount + 1
       }
-    )
+    })
 
     count.value++
 
     expect(dummy).toMatchObject([1, 0])
   })
 
-  it('watching primitive with deep: true', () => {
+  it("watching primitive with deep: true", () => {
     const count = ref(0)
     let dummy
     watch(
@@ -40,7 +36,7 @@ describe('api: watch', () => {
     expect(dummy).toMatchObject([1, 0])
   })
 
-  it('directly watching reative object (with automatic deep: true)', () => {
+  it("directly watching reative object (with automatic deep: true)", () => {
     const src = reactive({
       count: 0
     })
@@ -53,7 +49,7 @@ describe('api: watch', () => {
     expect(dummy).toBe(1)
   })
 
-  it('immedidate', () => {
+  it("immedidate", () => {
     const count = ref(0)
     const cb = jest.fn()
     watch(count, cb, { immediate: true })
@@ -61,5 +57,4 @@ describe('api: watch', () => {
     count.value++
     expect(cb).toHaveBeenCalledTimes(2)
   })
-
 })
