@@ -10,5 +10,8 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     steps:
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.1.6
       - name: Run Test
         run: pnpm test
