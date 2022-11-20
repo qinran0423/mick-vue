@@ -1,0 +1,14 @@
+name: CI
+
+on: 
+  push:
+    branchs: [master]
+  pull_reqest:
+    branchs: [master]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Test
+        run: pnpm test
